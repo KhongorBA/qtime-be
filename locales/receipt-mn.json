@@ -1,0 +1,20 @@
+{
+  "r_subtitle": "Захиалгын баримт / Invoice",
+  "r_receiptNo": "Баримтын дугаар",
+  "r_date": "Огноо",
+  "r_customer": "ХЭРЭГЛЭГЧ",
+  "r_business": "БИЗНЕС",
+  "r_service_col": "ҮЙЛЧИЛГЭЭ",
+  "r_time_col": "ЦАГ",
+  "r_master_col": "МАСТЕР",
+  "r_amount_col": "ДҮН",
+  "r_total": "НИЙТ ДҮН",
+  "r_status": "Статус",
+  "r_footer": "Bookez — Захиалгын платформ | bookez.mn",
+  "status_confirmed": "Баталгаажсан",
+  "status_completed": "Дууссан",
+  "status_cancelled": "Цуцлагдсан",
+  "status_pending": "Хүлээгдэж буй",
+  "status_owner_timeout": "Хугацаа дууссан",
+  "status_no_show": "Ирээгүй"
+}

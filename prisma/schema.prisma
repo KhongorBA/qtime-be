@@ -1,0 +1,446 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model StaffInviteCode {
+  id         String    @id @default(cuid())
+  businessId String
+  code       String    @unique
+  memberRole String    @default("staff")
+  expiresAt  DateTime
+  usedAt     DateTime?
+  usedBy     String?
+  createdAt  DateTime  @default(now())
+
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([code])
+  @@index([businessId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
+
+model User {
+  id                    String   @id @default(cuid())
+  loginName             String?  @unique
+  name                  String
+  email                 String   @unique
+  password              String
+  phone                 String?
+  securityPinHash       String?
+  pinEnabled            Boolean  @default(false)
+  biometricEnabled      Boolean  @default(false)
+  passwordResetTokens   PasswordResetToken[]
+  avatar             String?
+  role               Role     @default(customer)
+  stripeCustomerId   String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  favoriteBusinesses Business[] @relation("UserFavorites")
+  ownedBusinesses    Business[]
+  bookings           Booking[]
+  reviews            Review[]
+  devices             UserDevice[]
+  notifications       Notification[]
+  businessMemberships BusinessMember[]
+  otpVerifications    OtpVerification[] @relation("UserOtpVerifications")
+  bookingStatusChanges BookingStatusLog[] @relation("BookingStatusChangedBy")
+  waitingList          WaitingList[]
+  conversations        Conversation[]
+  sentMessages         Message[]
+}
+
+model UserDevice {
+  id        String   @id @default(cuid())
+  userId    String
+  fcmToken  String   @unique
+  fcmApp    String   @default("consumer")
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  body      String?
+  read      Boolean  @default(false)
+  data      Json?    // { type, bookingId, ... }
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, read])
+}
+
+enum Role {
+  customer
+  business_owner
+  manager
+  staff
+  admin
+}
+
+enum BusinessStatus {
+  pending
+  approved
+  rejected
+}
+
+enum BusinessMemberRole {
+  owner
+  manager
+  staff
+}
+
+enum BusinessMemberStatus {
+  pending
+  approved
+  rejected
+}
+
+model Business {
+  id           String   @id @default(cuid())
+  businessCode String?  @unique
+  name         String
+  description  String?
+  bio          String?
+  category     String
+  status       BusinessStatus @default(pending)
+  addressStreet   String?
+  addressCity    String
+  addressCountry String
+  addressPostal  String?
+  latitude     Float?
+  longitude    Float?
+  phone        String?
+  email        String?
+  images       String[]
+  rating       Float    @default(0)
+  reviewCount  Int      @default(0)
+  services     Json     // [{ name, description, duration, price, category }]
+  openingHours Json?    // [{ day, open, close, closed }]
+  acceptingBookings Boolean @default(true) // Online/offline switch
+  verified      Boolean  @default(false)  // Verification badge
+  ownerId      String
+  owner        User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  members      BusinessMember[]
+  favoritedBy  User[]   @relation("UserFavorites")
+  staff        Staff[]
+  bookings     Booking[]
+  reviews      Review[]
+  subscription  BusinessSubscription?
+  waitingList   WaitingList[]
+  locations     BusinessLocation[]
+  conversations Conversation[]
+  staffInviteCodes StaffInviteCode[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([addressCity, category])
+  @@index([rating(sort: Desc)])
+}
+
+model BusinessMember {
+  id         String               @id @default(cuid())
+  businessId String
+  userId     String
+  role       BusinessMemberRole
+  status     BusinessMemberStatus @default(pending)
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+  reviewedAt DateTime?
+  reviewedBy String?
+
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([businessId, userId])
+  @@index([businessId, status])
+  @@index([userId, status])
+}
+
+model OtpVerification {
+  id          String   @id @default(cuid())
+  channel     String
+  destination String
+  purpose     String
+  codeHash    String
+  failedAttempts Int   @default(0)
+  deviceId    String?
+  ipAddress   String?
+  blockedUntil DateTime?
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime @default(now())
+  /// profile_email Ð·ÑÑ€ÑÐ³ Ð·Ð¾Ñ€Ð¸ÑƒÐ»Ð°Ð»Ñ‚Ð°Ð°Ñ€ OTP Ñ…ÑÐ½Ð´ Ñ…Ð°Ñ€ÑŒÑÐ°Ð»Ð°Ð³Ð´Ð°Ñ… Ð²Ñ
+  userId      String?
+  user        User?    @relation("UserOtpVerifications", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([channel, destination, purpose, expiresAt])
+  @@index([ipAddress, createdAt])
+  @@index([deviceId, createdAt])
+  @@index([userId, purpose, destination])
+}
+
+model Staff {
+  id         String   @id @default(cuid())
+  businessId String
+  name       String
+  phone      String?
+  email      String?
+  nickname   String? // Ð´ÑÐ»Ð³ÑÑ†ÑÐ´ Ñ…Ð°Ñ€Ð°Ð³Ð´Ð°Ñ… Ð½ÑÑ€ (ÑÐ¾Ð½Ð³Ð¾Ð»Ñ‚Ñ‚Ð¾Ð¹)
+  position   String? // Ð°Ð»Ð±Ð°Ð½ Ñ‚ÑƒÑˆÐ°Ð°Ð» â€” Ð¶Ð°Ð³ÑÐ°Ð°Ð»Ñ‚Ñ‹Ð³ Ð±Ò¯Ð»ÑÐ³Ð»ÑÑ…
+  role       String? // senior | employee | stylist, barber, Ð³ÑÑ… Ð¼ÑÑ‚
+  /// ÐÐ¶Ð¸Ð»Ñ‚Ð½Ñ‹ Ó©Ð´Ó©Ñ€ Ñ‚ÑƒÑ‚Ð¼Ñ‹Ð½ Ñ†Ð°Ð³ (JSON Ð¼Ð°ÑÑÐ¸Ð²; Ð±Ð¸Ð·Ð½ÐµÑÐ¸Ð¹Ð½ schedule-Ñ‚ÑÐ¹ Ð¸Ð¶Ð¸Ð» Ð±Ò¯Ñ‚ÑÑ†)
+  avatar       String?
+  bio          String?
+  serviceIndexes Json?
+  rating       Float    @default(0)
+  reviewCount  Int      @default(0)
+  openingHours Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+
+  @@index([businessId])
+}
+
+model Booking {
+  id          String   @id @default(cuid())
+  customerId  String
+  businessId  String
+  staffId     String?
+  serviceName String
+  serviceDuration Int
+  servicePrice   Float
+  startTime   DateTime
+  endTime     DateTime
+  status      BookingStatus @default(confirmed)
+  notes       String?
+  reminderSent Boolean @default(false)
+  // Recurring booking fields
+  recurringIntervalDays Int?      // null = not recurring; 7 = weekly, 14 = biweekly, etc.
+  recurringParentId     String?   // null for parent booking, set for child instances
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  customer    User     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  staff       Staff?   @relation(fields: [staffId], references: [id], onDelete: SetNull)
+  payment     Payment?
+  statusLogs  BookingStatusLog[]
+
+  @@index([businessId, startTime])
+  @@index([customerId, startTime])
+  @@index([staffId])
+  @@index([recurringParentId])
+}
+
+model BookingStatusLog {
+  id          String        @id @default(cuid())
+  bookingId   String
+  oldStatus   BookingStatus
+  newStatus   BookingStatus
+  changedById String?
+  note        String?
+  createdAt   DateTime      @default(now())
+
+  booking     Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  changedBy   User?         @relation("BookingStatusChangedBy", fields: [changedById], references: [id], onDelete: SetNull)
+
+  @@index([bookingId, createdAt])
+  @@index([changedById])
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  completed
+  cancelled
+  no_show
+  /// Ð‘Ð¸Ð·Ð½ÐµÑ 10 Ð¼Ð¸Ð½ÑƒÑ‚ Ð´Ð¾Ñ‚Ð¾Ñ€ pending-Ð¸Ð¹Ð³ Ñ…Ò¯Ð»ÑÑÐ½ Ð°Ð²Ð°Ð°Ð³Ò¯Ð¹
+  owner_timeout
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  customerId String
+  businessId String
+  rating     Int
+  comment    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  customer   User     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@unique([customerId, businessId])
+  @@index([businessId])
+}
+
+model Payment {
+  id                    String    @id @default(cuid())
+  bookingId             String    @unique
+  amount                Float
+  depositAmount         Float?
+  remainderAmount       Float?
+  platformFee           Float?
+  status                PaymentStatus @default(pending)
+  method                String?   // stripe, cash, etc.
+  externalId            String?   // legacy stripe payment id
+  depositIntentId       String?   // Stripe PaymentIntent for deposit
+  remainderIntentId     String?   // Stripe PaymentIntent for remainder
+  remainderExternalId   String?   // QPay payment_id from remainder webhook
+  stripePaymentMethodId String?   // saved PM for off-session remainder charge
+  depositCapturedAt     DateTime?
+  remainderCapturedAt   DateTime?
+  refundedAt            DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+}
+
+enum PaymentStatus {
+  pending
+  completed
+  failed
+  refunded
+}
+
+model AppContent {
+  id        String   @id @default(cuid())
+  key       String   @unique  // banner_home, announcement, etc.
+  value     String   // JSON or plain text
+  updatedAt DateTime @updatedAt
+}
+
+// Dynamic platform configuration (deposit %, fee %, trial days, etc.)
+model PlatformConfig {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+enum SubscriptionStatus {
+  trial
+  active
+  grace    // paid subscription expired, 3-day grace period
+  expired
+}
+
+model BusinessSubscription {
+  id                   String             @id @default(cuid())
+  businessId           String             @unique
+  trialStartedAt       DateTime           @default(now())
+  trialEndsAt          DateTime
+  status               SubscriptionStatus @default(trial)
+  stripeSubscriptionId String?
+  stripeCustomerId     String?
+  currentPeriodEnd     DateTime?
+  warningSent7d        Boolean            @default(false)
+  warningSent3d        Boolean            @default(false)
+  warningSent1d        Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([trialEndsAt])
+}
+
+model WaitingList {
+  id           String   @id @default(cuid())
+  businessId   String
+  customerId   String
+  serviceIndex Int      @default(0)
+  preferredDate DateTime?
+  notes        String?
+  status       String   @default("waiting") // waiting | notified | booked | cancelled
+  notifiedAt   DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  customer User     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([businessId, status])
+  @@index([customerId])
+}
+
+model BusinessLocation {
+  id            String   @id @default(cuid())
+  businessId    String
+  name          String
+  addressStreet String?
+  addressCity   String
+  latitude      Float?
+  longitude     Float?
+  phone         String?
+  isMain        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([businessId])
+}
+
+model Conversation {
+  id            String    @id @default(cuid())
+  businessId    String
+  customerId    String
+  lastMessageAt DateTime?
+  createdAt     DateTime  @default(now())
+
+  business  Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  customer  User      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  messages  Message[]
+
+  @@unique([businessId, customerId])
+  @@index([businessId, lastMessageAt])
+  @@index([customerId, lastMessageAt])
+}
+
+model Message {
+  id             String    @id @default(cuid())
+  conversationId String
+  senderId       String
+  content        String    @default("")
+  imageUrl       String?
+  readAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+  @@index([senderId])
+}

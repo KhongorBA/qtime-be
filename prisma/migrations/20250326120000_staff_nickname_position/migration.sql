@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Staff" ADD COLUMN IF NOT EXISTS "nickname" TEXT;
+ALTER TABLE "Staff" ADD COLUMN IF NOT EXISTS "position" TEXT;

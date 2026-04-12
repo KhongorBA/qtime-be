@@ -1,0 +1,20 @@
+{
+  "r_subtitle": "Booking receipt / Invoice",
+  "r_receiptNo": "Receipt No",
+  "r_date": "Date",
+  "r_customer": "CUSTOMER",
+  "r_business": "BUSINESS",
+  "r_service_col": "SERVICE",
+  "r_time_col": "TIME",
+  "r_master_col": "STAFF",
+  "r_amount_col": "AMOUNT",
+  "r_total": "TOTAL",
+  "r_status": "Status",
+  "r_footer": "Bookez — booking platform | bookez.mn",
+  "status_confirmed": "Confirmed",
+  "status_completed": "Completed",
+  "status_cancelled": "Cancelled",
+  "status_pending": "Pending",
+  "status_owner_timeout": "Owner timeout",
+  "status_no_show": "No show"
+}
