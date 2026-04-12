@@ -6,3 +6,7 @@ dist/
 coverage/
 .idea/
 .vscode/
+
+# Firebase service account keys — нууц мэдээлэл агуулдаг тул commit хийхгүй
+*-firebase-adminsdk-*.json
+serviceAccountKey.json
