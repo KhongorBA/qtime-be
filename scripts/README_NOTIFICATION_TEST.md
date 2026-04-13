@@ -1,15 +1,15 @@
-# Booker-BE Scripts
+# Qtime BE Scripts
 
 ## Admin хэрэглэгч үүсгэх
 
 Одоо байгаа хэрэглэгчийг admin болгох:
 
 ```bash
-cd Bookez-Be
+cd qtime-be
 node scripts/create-admin.js user@example.com
 ```
 
-Эхлээд Booker апп эсвэл `/api/auth/register`-аар хэрэглэгч бүртгэсэн байх ёстой.
+Эхлээд Qtime апп эсвэл `/api/auth/register`-аар хэрэглэгч бүртгэсэн байх ёстой.
 
 ---
 
@@ -49,7 +49,7 @@ FROM "User";
 ## 3. Script ашиглах (зөвлөмжтэй)
 
 ```bash
-cd Bookez-Be
+cd qtime-be
 
 # Энгийн туршилт
 node scripts/insert-test-notification.js user@example.com

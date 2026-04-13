@@ -1,4 +1,4 @@
-# Bookez Backend
+# Qtime Backend
 
 Node.js backend for a Fresha-like booking platform. Book salons, spas, barbers, and beauty services nearby.
 

@@ -20,7 +20,7 @@ export const protect = async (req, res, next) => {
     token = req.headers.authorization.split(' ')[1];
   }
   if (!token) {
-    token = parseCookieValue(req.headers.cookie, process.env.AUTH_COOKIE_NAME || 'bookez_at');
+    token = parseCookieValue(req.headers.cookie, process.env.AUTH_COOKIE_NAME || 'qtime_at');
   }
   if (!token) {
     return res.status(401).json({ message: 'Not authorized' });
@@ -45,7 +45,7 @@ export const optionalAuth = async (req, res, next) => {
     token = req.headers.authorization.split(' ')[1];
   }
   if (!token) {
-    token = parseCookieValue(req.headers.cookie, process.env.AUTH_COOKIE_NAME || 'bookez_at');
+    token = parseCookieValue(req.headers.cookie, process.env.AUTH_COOKIE_NAME || 'qtime_at');
   }
   if (token) {
     try {

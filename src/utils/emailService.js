@@ -27,7 +27,7 @@ async function sendMail({ to, subject, html, text }) {
     return;
   }
   await transporter.sendMail({
-    from: process.env.SMTP_FROM || '"Bookez" <noreply@bookez.mn>',
+    from: process.env.SMTP_FROM || '"Qtime" <noreply@qtime.mn>',
     to,
     subject,
     html,
@@ -60,13 +60,13 @@ function baseLayout(content) {
 <body style="margin:0;padding:0;background:#0A1214;font-family:system-ui,sans-serif">
   <div style="max-width:520px;margin:32px auto;background:#0F2224;border-radius:16px;overflow:hidden">
     <div style="background:#152526;padding:24px 28px;border-bottom:1px solid #1E3A3C">
-      <span style="font-size:22px;font-weight:800;color:#12C9A3">Bookez</span>
+      <span style="font-size:22px;font-weight:800;color:#12C9A3">Qtime</span>
     </div>
     <div style="padding:28px">
       ${content}
     </div>
     <div style="padding:16px 28px;border-top:1px solid #1E3A3C;text-align:center">
-      <p style="color:#4B5563;font-size:12px;margin:0">© 2025 Bookez. Бүх эрх хуулиар хамгаалагдсан.</p>
+      <p style="color:#4B5563;font-size:12px;margin:0">© 2025 Qtime. Бүх эрх хуулиар хамгаалагдсан.</p>
     </div>
   </div>
 </body>
@@ -113,7 +113,7 @@ export async function sendBookingStatusEmail({ to, customerName, businessName, s
 
   await sendMail({
     to,
-    subject: `Bookez — Захиалга ${label}: ${businessName}`,
+    subject: `Qtime — Захиалга ${label}: ${businessName}`,
     html,
     text: `Сайн байна уу ${customerName},\n\nТаны ${businessName}-д хийсэн "${serviceName}" захиалга ${label} болсон.\nЦаг: ${dateStr}\n\nBookez`,
   });
@@ -149,12 +149,12 @@ export async function sendBookingReminderEmail({ to, customerName, businessName,
       ${businessPhone ? `<div><span style="color:#9CA3AF;font-size:12px">Холбоо барих</span><p style="color:#F9FAFB;margin:2px 0 0">${businessPhone}</p></div>` : ''}
     </div>
 
-    <p style="color:#6B7280;font-size:13px">Цуцлах шаардлагатай бол Bookez аппаас захиалгаа цуцална уу.</p>
+    <p style="color:#6B7280;font-size:13px">Цуцлах шаардлагатай бол Qtime аппаас захиалгаа цуцална уу.</p>
   `);
 
   await sendMail({
     to,
-    subject: `Bookez — Маргааш ${businessName}-д таны цаг болно`,
+    subject: `Qtime — Маргааш ${businessName}-д таны цаг болно`,
     html,
     text: `Сайн байна уу ${customerName},\n\nМаргааш ${businessName}-д "${serviceName}" үйлчилгээ авах цаг таны болно.\nЦаг: ${dateStr}\n\nBookez`,
   });
@@ -202,16 +202,16 @@ export async function sendReceiptEmail({ to, customerName, businessName, service
   }
 
   const mailOpts = {
-    from: process.env.SMTP_FROM || '"Bookez" <noreply@bookez.mn>',
+    from: process.env.SMTP_FROM || '"Qtime" <noreply@qtime.mn>',
     to,
-    subject: `Bookez — Баримт: ${businessName}`,
+    subject: `Qtime — Баримт: ${businessName}`,
     html,
     text: `${customerName} таны ${businessName} - "${serviceName}" захиалгын баримт.\nДүн: ${amountStr}`,
   };
 
   if (pdfBuffer) {
     mailOpts.attachments = [{
-      filename: `bookez-receipt-${bookingId?.slice(-8)?.toUpperCase()}.pdf`,
+      filename: `qtime-receipt-${bookingId?.slice(-8)?.toUpperCase()}.pdf`,
       content: pdfBuffer,
       contentType: 'application/pdf',
     }];

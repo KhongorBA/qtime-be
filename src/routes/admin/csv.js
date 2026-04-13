@@ -78,7 +78,7 @@ csvRouter.get('/bookings', async (req, res) => {
     const csv = toCsv(rows, headers);
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-    res.setHeader('Content-Disposition', `attachment; filename="bookez-bookings-${Date.now()}.csv"`);
+    res.setHeader('Content-Disposition', `attachment; filename="qtime-bookings-${Date.now()}.csv"`);
     res.send('\uFEFF' + csv); // BOM for Excel UTF-8
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -122,7 +122,7 @@ csvRouter.get('/payments', async (req, res) => {
     const csv = toCsv(rows, headers);
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-    res.setHeader('Content-Disposition', `attachment; filename="bookez-payments-${Date.now()}.csv"`);
+    res.setHeader('Content-Disposition', `attachment; filename="qtime-payments-${Date.now()}.csv"`);
     res.send('\uFEFF' + csv);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -166,7 +166,7 @@ csvRouter.get('/users', async (req, res) => {
     const csv = toCsv(rows, headers);
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-    res.setHeader('Content-Disposition', `attachment; filename="bookez-users-${Date.now()}.csv"`);
+    res.setHeader('Content-Disposition', `attachment; filename="qtime-users-${Date.now()}.csv"`);
     res.send('\uFEFF' + csv);
   } catch (err) {
     res.status(500).json({ message: err.message });

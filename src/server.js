@@ -78,7 +78,7 @@ if (!fs.existsSync(uploadDir)) {
 }
 app.use('/uploads', express.static(path.resolve(uploadDir)));
 
-app.get('/api/health', (req, res) => res.json({ status: 'ok', message: 'Bookez API is running' }));
+app.get('/api/health', (req, res) => res.json({ status: 'ok', message: 'Qtime API is running' }));
 
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/businesses', businessRoutes);

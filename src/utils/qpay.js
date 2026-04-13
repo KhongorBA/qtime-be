@@ -10,12 +10,12 @@
  *                      = https://merchant.qpay.mn/v2  (production)
  *   QPAY_USERNAME      = merchant username from QPay dashboard
  *   QPAY_PASSWORD      = merchant password from QPay dashboard
- *   QPAY_INVOICE_CODE  = invoice code from QPay dashboard (e.g. BOOKEZ_INVOICE)
+ *   QPAY_INVOICE_CODE  = invoice code from QPay dashboard (e.g. QTIME_INVOICE)
  *   QPAY_MOCK          = true  (dev/test mode — no real API calls)
  */
 
 const BASE = process.env.QPAY_BASE_URL || 'https://sandbox.qpay.mn/v2';
-const INVOICE_CODE = process.env.QPAY_INVOICE_CODE || 'BOOKEZ_INVOICE';
+const INVOICE_CODE = process.env.QPAY_INVOICE_CODE || 'QTIME_INVOICE';
 
 // ── Token cache ──────────────────────────────────────────────────────────────
 let _token = null;

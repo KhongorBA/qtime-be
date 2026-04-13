@@ -1,5 +1,5 @@
 {
-  "name": "bookez-be",
+  "name": "qtime-be",
   "version": "1.0.0",
   "description": "Backend for Fresha-like booking platform - salons, spas, barbers & beauty services",
   "main": "src/server.js",

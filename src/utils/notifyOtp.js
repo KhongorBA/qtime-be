@@ -35,12 +35,12 @@ export async function sendOtpEmail(destination, code) {
     return;
   }
   await transporter.sendMail({
-    from: process.env.SMTP_FROM || `"Bookez" <noreply@bookez.mn>`,
+    from: process.env.SMTP_FROM || `"Qtime" <noreply@qtime.mn>`,
     to: destination,
-    subject: 'Bookez — Таны баталгаажуулах код',
+    subject: 'Qtime — Таны баталгаажуулах код',
     html: `
       <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#0F2224;border-radius:16px">
-        <h2 style="color:#00E5A0;margin:0 0 8px">Bookez</h2>
+        <h2 style="color:#00E5A0;margin:0 0 8px">Qtime</h2>
         <p style="color:#94A3B8;margin:0 0 24px">Таны баталгаажуулах код:</p>
         <div style="background:#152526;border-radius:12px;padding:20px;text-align:center">
           <span style="font-size:36px;font-weight:700;letter-spacing:8px;color:#ffffff">${code}</span>
@@ -51,7 +51,7 @@ export async function sendOtpEmail(destination, code) {
         </p>
       </div>
     `,
-    text: `Таны Bookez баталгаажуулах код: ${code}\n\n5 минутад хүчтэй.`,
+    text: `Таны Qtime баталгаажуулах код: ${code}\n\n5 минутад хүчтэй.`,
   });
   console.log(`[OTP EMAIL] Sent to ${destination}`);
 }

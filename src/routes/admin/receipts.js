@@ -85,7 +85,7 @@ function generatePdfBuffer(booking, lang = 'mn') {
     doc.rect(0, 0, doc.page.width, 100).fill(darkBg);
 
     // Logo / brand
-    doc.fontSize(26).fillColor(primaryColor).font(font.bold).text('Bookez', 50, 30);
+    doc.fontSize(26).fillColor(primaryColor).font(font.bold).text('Qtime', 50, 30);
     doc.fontSize(11).fillColor('#94A3B8').font(font.regular).text(rt(locale, 'r_subtitle'), 50, 62);
 
     // Receipt ID & date top-right
@@ -179,7 +179,7 @@ receiptsRouter.get('/:bookingId', async (req, res) => {
     const lang = req.query.lang === 'en' ? 'en' : 'mn';
     const pdfBuffer = await generatePdfBuffer(booking, lang);
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="bookez-receipt-${booking.id.slice(-8).toUpperCase()}.pdf"`);
+    res.setHeader('Content-Disposition', `attachment; filename="qtime-receipt-${booking.id.slice(-8).toUpperCase()}.pdf"`);
     res.setHeader('Content-Length', pdfBuffer.length);
     res.send(pdfBuffer);
   } catch (err) {

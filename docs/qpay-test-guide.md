@@ -153,7 +153,7 @@ curl -s -X POST http://localhost:5000/api/payments/booking/$BOOKING_ID/refund \
 
 ```json
 {
-  "info": { "name": "Bookez QPay Test" },
+  "info": { "name": "Qtime QPay Test" },
   "variable": [
     { "key": "base", "value": "http://localhost:5000/api" },
     { "key": "token", "value": "" },

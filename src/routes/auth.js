@@ -14,7 +14,7 @@ export const authRoutes = express.Router();
 const generateToken = (id) =>
   signJwt({ id }, process.env.JWT_EXPIRES_IN || '7d');
 
-const authCookieName = process.env.AUTH_COOKIE_NAME || 'bookez_at';
+const authCookieName = process.env.AUTH_COOKIE_NAME || 'qtime_at';
 const shouldUseSecureCookie = () =>
   process.env.COOKIE_SECURE === 'true' || process.env.NODE_ENV === 'production';
 const authCookieOptions = () => {
@@ -490,7 +490,7 @@ authRoutes.post(
 
       const emailVal = email && email.trim()
         ? email.trim()
-        : `p_${phoneClean.replace(/\D/g, '')}@bookez.user`;
+        : `p_${phoneClean.replace(/\D/g, '')}@qtime.user`;
 
       const existsEmail = await prisma.user.findUnique({ where: { email: emailVal } });
       if (existsEmail) return res.status(400).json({ message: 'Имэйл эсвэл утас аль хэдийн бүртгэлтэй' });

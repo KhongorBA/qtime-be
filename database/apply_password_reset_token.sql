@@ -1,5 +1,5 @@
 -- PasswordResetToken хүснэгт нэмэх (хаана ч User, Business гэх мэт хүснэгтүүд аль хэдийн байгаа бол)
--- Ажиллуулах: psql -U user -d bookez -f database/apply_password_reset_token.sql
+-- Ажиллуулах: psql -U user -d qtime -f database/apply_password_reset_token.sql
 
 CREATE TABLE IF NOT EXISTS "PasswordResetToken" (
     "id" TEXT NOT NULL,

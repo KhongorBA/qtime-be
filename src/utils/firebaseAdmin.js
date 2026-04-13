@@ -18,7 +18,7 @@ function isStaleFcmTokenError(err) {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DEFAULT_KEY = join(__dirname, '../../serviceAccountKey.json');
-const BUSINESS_APP_NAME = 'booker-business-fcm';
+const BUSINESS_APP_NAME = 'qtime-partner-fcm';
 
 let fb = null;
 let consumerMessaging = null;
